@@ -2,6 +2,7 @@ package server
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -74,7 +75,11 @@ func (s *Server) getObjectHandler(w http.ResponseWriter, _ *http.Request, key st
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	if _, err := w.Write(data); err != nil {
+		log.Printf("write error: %v", err)
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (s *Server) HandleLivenessProbe(w http.ResponseWriter, _ *http.Request) {
