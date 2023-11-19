@@ -79,7 +79,7 @@ func TestStorageSaveOnShutdown(t *testing.T) {
 	storage.Shutdown()
 
 	loadedStorage := New(context.Background(), WithPersistent(Persistent{
-		Name:     "filename",
+		Name:     filename,
 		Format:   GobFormat,
 		Interval: 1 * time.Hour,
 	}))
