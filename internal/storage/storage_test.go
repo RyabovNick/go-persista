@@ -95,7 +95,7 @@ func TestStorageJanitor(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	storage := New(ctx, WithJanitor(Janitor{
-		Interval: 100 * time.Millisecond,
+		Interval: 50 * time.Millisecond,
 	}))
 
 	tm := time.Now().Add(50 * time.Millisecond)
