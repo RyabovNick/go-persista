@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-persista
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-persista
+  template:
+    metadata:
+      labels:
+        app: go-persista
+    spec:
+      containers:
+      - name: go-persista
+        image: go-persista:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        volumeMounts:
+          - name: go-persista-recover
+            mountPath: /recover
+        livenessProbe:
+          httpGet:
+            path: /probes/liveness
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /probes/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+      volumes:
+      - name: go-persista-recover
+        persistentVolumeClaim:
+          claimName: go-persista-pvc
